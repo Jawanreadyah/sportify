@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screen Sharing</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+      color: #333;
+    }
+    header {
+      background-color: #007bff;
+      padding: 20px;
+      text-align: center;
+      color: #fff;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    video {
+      width: 100%;
+      border-radius: 8px;
+    }
+    .btn {
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Screen Sharing</h1>
+  </header>
+  <div class="container">
+    <video id="videoPlayer" autoplay controls></video>
+    <button id="startSharing" class="btn">Start Screen Sharing</button>
+    <button id="stopSharing" class="btn" style="display:none">Stop Screen Sharing</button>
+  </div>
+
+  <script>
+    const videoPlayer = document.getElementById('videoPlayer');
+    const startSharingBtn = document.getElementById('startSharing');
+    const stopSharingBtn = document.getElementById('stopSharing');
+    let mediaStream = null;
+
+    startSharingBtn.addEventListener('click', async () => {
+      try {
+        mediaStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+        videoPlayer.srcObject = mediaStream;
+        startSharingBtn.style.display = 'none';
+        stopSharingBtn.style.display = 'block';
+      } catch (err) {
+        console.error('Error accessing media devices:', err);
+      }
+    });
+
+    stopSharingBtn.addEventListener('click', () => {
+      if (mediaStream) {
+        mediaStream.getTracks().forEach(track => track.stop());
+        videoPlayer.srcObject = null;
+        startSharingBtn.style.display = 'block';
+        stopSharingBtn.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
+
